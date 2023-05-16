@@ -19,15 +19,25 @@ app.get('/', (req, res) => {
 })
 
 app.get("/api/notes", (req, res) => {
-    fs.readFile(path.join(__dirname, "db/db.json"), "utf8", (err, data) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ error: "Failed to read notes from file." });
-      }
-  
-      res.json(JSON.parse(data)); 
+    const data = fs.readFileSync("./db/db.json");
+    res.json(JSON.parse(data));
     });
-  });
+
+
+
+app.post('/api/notes', (req, res) => {
+    const notes = JSON.parse(fs.readFileSync("./db/db.json"));
+
+    const addNote = {
+        id: uuidv4(),
+        title: req.body.title,
+        text: req.body.text,
+    };
+    notes.push(addNote);
+    fs.writeFileSync("db/db.json",  JSON.stringify(notes));
+    res.json(addNote)
+    })
+      
   
 app.listen(PORT, () => {
     console.log(`Server is listening at http://localhost:${PORT}`);
