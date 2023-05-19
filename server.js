@@ -38,6 +38,13 @@ app.post('/api/notes', (req, res) => {
     res.json(addNote)
     })
       
+app.delete("/api/notes/:id", (req,res) => {
+    const notes = JSON.parse(fs.readFileSync("./db/db.json"));
+    const removeNote = notes.filter((rmvNote) => rmvNote.id !== req.params.id);
+    fs.writeFileSync("./db/db.json", JSON.stringify(removeNote));
+    res.json(removeNote);
+    });
+        
   
 app.listen(PORT, () => {
     console.log(`Server is listening at http://localhost:${PORT}`);
